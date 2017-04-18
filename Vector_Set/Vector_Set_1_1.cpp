@@ -1,3 +1,8 @@
+/*
+ * Solution to Problem 1.1
+ * by Xiaoxin Wu
+ * 04/17/17
+ * */
 #include <iostream>
 #include <vector>
 #include <unordered_set>
