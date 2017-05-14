@@ -1,0 +1,380 @@
+1.	Binary Tree Level Order Traversal
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return(res);
+        
+        queue<TreeNode*> que;
+        que.push(root);
+        que.push(NULL);
+        //use NULL to indicate a starting of a new level
+        //or end of the last level
+        int CurDep=0;
+        
+        
+        while(!que.empty()){
+            TreeNode* cur=que.front();
+            que.pop();
+            if(!cur){
+                CurDep++;
+                if(!que.empty()) que.push(NULL);
+                continue;
+            }
+            
+            if(CurDep==res.size()){
+                res.push_back(vector<int>(0,0));
+            }
+            res[CurDep].push_back(cur->val);
+            
+            if(cur->left) que.push(cur->left);
+            if(cur->right) que.push(cur->right);
+        }
+        return(res);
+    }
+};
+
+
+
+
+
+
+
+
+
+2.	Binary Tree Zigzag Level Order Traversal
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return(res);
+        
+        stack<TreeNode*> *curlevel=new stack<TreeNode*>;
+        stack<TreeNode*> *nextlevel=new stack<TreeNode*>;
+        
+        curlevel->push(root);
+        bool LtR=true;
+        
+        while(!curlevel->empty()){
+            vector<int> curValue;
+            while(!curlevel->empty()){
+                TreeNode *cur=curlevel->top();
+                curlevel->pop();
+                curValue.push_back(cur->val);
+                
+                if(LtR){
+                    if(cur->left) nextlevel->push(cur->left);
+                    if(cur->right) nextlevel->push(cur->right);
+                }
+                else{
+                    if(cur->right) nextlevel->push(cur->right);
+                    if(cur->left) nextlevel->push(cur->left);          
+                }
+            }
+            stack<TreeNode*> *temp=curlevel;
+            curlevel=nextlevel;
+            nextlevel=temp;
+            res.push_back(curValue);
+            LtR=!LtR;
+     
+        }
+        
+        return(res);
+    }
+};
+
+
+
+3.	Word Ladder
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        if(dict.find(endWord)==dict.end()) return 0;
+        /*
+        if(find(wordList.begin(),wordList.end(),endWord)==wordList.end()){
+            return 0;
+        }
+        */
+        queue<string> que;
+        //need to sign to indicate the depth, it could be "*"
+        que.push(beginWord);
+        que.push("*");
+        int dep=1;
+        
+        while(!que.empty()){
+            string str=que.front();
+            que.pop();
+            if(str!="*"){
+                int len=str.length();
+                for(int ii=0;ii<len;ii++){
+                
+                    for(char c='a';c<='z';c++){
+                        if(str[ii]==c) continue;
+                        string temp=str;
+                        temp[ii]=c;
+                        if(temp==endWord) return dep+1;
+                        /*
+                        if(find(wordList.begin(),wordList.end(),temp)!=wordList.end()){
+                            que.push(temp);
+                            wordList.erase(find(wordList.begin(),wordList.end(),temp));
+                        }
+                        */
+                        if(dict.find(temp)!=dict.end()){
+                            que.push(temp);
+                            dict.erase(temp);
+                        }
+                    }
+                }
+            }
+            else if(!que.empty()){
+                dep++;
+                que.push("*");
+            }
+        }
+        return 0;
+    }
+};
+
+
+
+
+
+
+
+4.	Stack and Queue
+a.	Implement Queue using Stacks
+class MyQueue {
+public:
+    /** Initialize your data structure here. */
+    
+    /** Push element x to the back of queue. */
+    void push(int x) {
+        stack<int> tmp;
+        while(!s1.empty()){
+            tmp.push(s1.top());
+            s1.pop();
+        }
+        tmp.push(x);
+        while(!tmp.empty()){
+            s1.push(tmp.top());
+            tmp.pop();
+        }
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    int pop() {
+        int tmp=s1.top();
+        s1.pop();
+        return tmp;
+    }
+    
+    /** Get the front element. */
+    int peek() {
+        return(s1.top());
+    }
+    
+    /** Returns whether the queue is empty. */
+    bool empty() {
+        return(s1.empty());
+    }
+    
+private:
+    stack<int> s1;
+};
+
+
+b.Implement Stack using Queues
+class MyStack {
+public:
+        // Push element x onto stack.
+    void push(int x) {
+        queue<int> tmp;
+        while (!q.empty()) {
+            tmp.push(q.front());
+            q.pop();
+        }
+        q.push(x);
+        while (!tmp.empty()) {
+            q.push(tmp.front());
+            tmp.pop();
+        }
+    }
+
+    // Removes the element on top of the stack.return that element.
+    int pop() {
+        int temp=q.front();
+        q.pop();
+        return temp;
+    }
+
+    // Get the top element.
+    int top() {
+        return q.front();
+    }
+
+    // Return whether the stack is empty.
+    bool empty() {
+        return q.empty();
+    }
+    
+private:
+    queue<int> q;
+};
+
+
+
+
+Python 1:
+class Solution(object):
+    def levelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if root==None:
+            return([])
+        res=[]
+        res=self.order(root, 1,res)
+        return(res)
+    def order(self, root, height,res):
+        if root==None:
+            return(res)
+        if len(res)<height:
+            res.append([])
+        res[height-1].append(root.val)
+        self.order(root.left, height+1,res)
+        self.order(root.right, height+1,res)
+        return(res)
+Python 2:
+class Solution(object):
+    def zigzagLevelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        #BFS
+        if root==None:
+            return([])
+        queue=[]
+        queue.append(root)
+        res=[]
+        while(queue):
+            list1=[xx.val for xx in queue]
+            res.append(list1)
+            temp=[]
+            for xx in queue:
+                if xx.left!=None:
+                    temp.append(xx.left)
+                if xx.right!=None:
+                    temp.append(xx.right)
+queue=temp
+
+        for ii in range(len(res)):
+            if ii%2==1:
+                res[ii]=res[ii][::-1]
+        return(res)
+
+
+python 4.1
+class MyQueue(object):
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.Queue=[]
+
+    def push(self, x):
+        """
+        Push element x to the back of queue.
+        :type x: int
+        :rtype: void
+        """
+        self.Queue=self.Queue[::-1]
+        self.Queue.append(x)
+        self.Queue=self.Queue[::-1]
+
+    def pop(self):
+        """
+        Removes the element from in front of queue and returns that element.
+        :rtype: int
+        """
+        a=self.Queue.pop()
+        return(a)
+
+    def peek(self):
+        """
+        Get the front element.
+        :rtype: int
+        """
+        return(self.Queue[-1])
+
+    def empty(self):
+        """
+        Returns whether the queue is empty.
+        :rtype: bool
+        """
+        return(True if len(self.Queue)==0 else False)
+
+
+# Your MyQueue object will be instantiated and called as such:
+# obj = MyQueue()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.peek()
+# param_4 = obj.empty()
+
+
+Python 4.2
+class MyStack(object):
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.stack=[]
+        
+
+    def push(self, x):
+        """
+        Push element x onto stack.
+        :type x: int
+        :rtype: void
+        """
+        self.stack=self.stack[::-1]
+        self.stack.insert(0,x)
+        self.stack=self.stack[::-1]
+        
+        #self.stack.insert(0, x)
+        #for i in range(len(self.stack)-1):
+        
+        #    self.stack.insert(0, self.stack[-1])
+        #    self.stack.pop()
+        
+
+    def pop(self):
+        """
+        Removes the element on top of the stack and returns that element.
+        :rtype: int
+        """
+        a=self.stack.pop()
+        return(a)
+        
+
+    def top(self):
+        """
+        Get the top element.
+        :rtype: int
+        """
+        return(self.stack[-1])
+
+    def empty(self):
+        """
+        Returns whether the stack is empty.
+        :rtype: bool
+        """
+        return not self.stack
+
