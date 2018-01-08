@@ -20,12 +20,12 @@ public class BinarySearch6 {
 	//           ---------Left/T---------|---------Right/F---------	
 	// distance: 0----------1---------1.1|1.2---------2-----------3
 	// my_k = Math.ceil(pair_distance / cur_max_distance) - 1
-	// which means the least number of new gas stations we need to build among gas station A and B to 
+	// which means the least number of new gas stations we need to build between gas station A and B to 
 	// maintain the largest distance among any new pairs between A and B to be less than our current max distance.
 	// let's say if cur_max_distance = 1
 	// [0, 3] we need to build CEIL[(3 / 1)] - 1 == 2 gas stations between 0 and 3
 	// [3, 5.4] we need to build CEIL[(5.4 - 3)] - 1 = 2 gas stations between 3 and 5.4
-	// which means in total we need 4 gas stations to be built in order to make their smallest pair distance less than 1
+	// which means in total we need 4 gas stations to be built in order to make their smallest pair distance at least 1
 	// according to the above formula, we have corresponding k values to the distances:
 	// distance: 0----------1-----------1.1|1.2---------2-----------3
 	// k       : INFI-------4-------------4|3-----------2-----------0
