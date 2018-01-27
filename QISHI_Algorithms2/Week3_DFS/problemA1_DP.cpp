@@ -17,8 +17,8 @@ public:
         return dp[nums.size()][S + 1000] == -1? 0 : dp[nums.size()][S + 1000];
     }
     
-    //dp[i + 1][j] = dp[i][j - nums[i]] + 1
-    //dp[i + 1][j] = dp[i][j + nums[i]] + 1
+    //dp[i + 1][j] = dp[i][j - nums[i]]
+    //dp[i + 1][j] += dp[i][j + nums[i]]
     
     // [1, 1, 1] 
     //   0 1 2 3 4 5 6
