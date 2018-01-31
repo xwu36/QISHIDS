@@ -7,7 +7,7 @@ public:
         return dfs(nums_, 4);
     }
     
-    bool dfs(vector<double> nums, int n){
+    bool dfs(vector<double>& nums, int n){
   
         if(n == 1){
             if(abs(nums[0] - 24) < eps) return true;
